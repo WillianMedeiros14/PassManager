@@ -7,6 +7,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import uuid from 'react-native-uuid';
 
+
 import { Input } from '../../components/Form/Input';
 import { Button } from '../../components/Form/Button';
 
@@ -29,6 +30,7 @@ const schema = Yup.object().shape({
 })
 
 export function RegisterLoginData() {
+
   const {
     control,
     handleSubmit,
@@ -36,15 +38,39 @@ export function RegisterLoginData() {
     formState: {
       errors
     }
-  } = useForm();
+  } = useForm({
+    resolver: yupResolver(schema)
+  });
 
   async function handleRegister(formData: FormData) {
+    const key = `@passmanager:logins`;
+
     const newLoginData = {
       id: String(uuid.v4()),
       ...formData
     }
 
     // Save data on AsyncStorage
+    try {
+      const data = await AsyncStorage.getItem(key);
+      const loginData = data ? JSON.parse(data) : [];
+
+      const dataFormated = [
+        ...loginData,
+        newLoginData
+      ];
+
+      await AsyncStorage.setItem(key, JSON.stringify(dataFormated));
+
+      reset();
+
+     
+
+    } catch (error) {
+      console.log(error);
+      Alert.alert("Não foi possível salvar");
+    }
+
   }
 
   return (
@@ -62,6 +88,7 @@ export function RegisterLoginData() {
             name="title"
             error={
               // message error here
+              errors.title && errors.title.message
             }
             control={control}
             placeholder="Escreva o título aqui"
@@ -73,6 +100,7 @@ export function RegisterLoginData() {
             name="email"
             error={
               // message error here
+              errors.email && errors.email.message
             }
             control={control}
             placeholder="Escreva o Email aqui"
@@ -85,6 +113,7 @@ export function RegisterLoginData() {
             name="password"
             error={
               // message error here
+              errors.password && errors.password.message
             }
             control={control}
             secureTextEntry

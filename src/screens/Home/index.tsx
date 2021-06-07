@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
+import { Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
 
@@ -22,12 +23,22 @@ interface LoginDataProps {
 type LoginListDataProps = LoginDataProps[];
 
 export function Home() {
-  // const [searchListData, setSearchListData] = useState<LoginListDataProps>([]);
-  // const [data, setData] = useState<LoginListDataProps>([]);
+   const [searchListData, setSearchListData] = useState<LoginListDataProps>([]);
+   const [data, setData] = useState<LoginListDataProps>([]);
 
   async function loadData() {
     // Get asyncStorage data, use setSearchListData and setData
+
+    const dataKey = `@passmanager:logins`
+    const data = await AsyncStorage.getItem(dataKey);
+
+    if(!data) return;
+
+    setSearchListData(JSON.parse(data));
+    setData(JSON.parse(data));
+    
   }
+
   useEffect(() => {
     loadData();
   }, []);
@@ -38,6 +49,17 @@ export function Home() {
 
   function handleFilterLoginData(search: string) {
     // Filter results inside data, save with setSearchListData
+    
+    if(search != ''){
+        const loginSearch = data
+        .filter((busca: LoginDataProps) => 
+          busca.title.toLowerCase().includes(search.toLowerCase())
+        );
+
+        setSearchListData(loginSearch)
+    } else {
+        setSearchListData(data);
+    }
   }
 
   return (
