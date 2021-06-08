@@ -12,7 +12,7 @@
 
 ## 💻 Projeto
 
-O PassManager, foi a aplicação proposta para o desafio, após o termino do segundo módulo do Ignite (Curso realizado pela [Rocketseat](https://rocketseat.com.br/)) na trilha de React Native.<br>
+O PassManager, é um app para salvar em apenas um lugar os seus logins. Esta foi a aplicação proposta para o desafio, após o termino do segundo módulo do Ignite (Curso realizado pela [Rocketseat](https://rocketseat.com.br/)) na trilha de React Native.<br>
 Este app teve como objetivo colocar os conhecimentos adquiridos no segundo módulo, como: Salvamento no AsyncStorage, Themas globais com styled-components e Contexto global com hook.<br>
 O app salva os dados no AsyncStorage.
 
