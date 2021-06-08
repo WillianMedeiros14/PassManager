@@ -7,22 +7,22 @@ export const Container = styled.View`
 `;
 
 export const Label = styled.Text`
-  font-family: 'Poppins_500Medium';
+  font-family: ${({ theme }) => theme.fonts.medium};
   font-size: ${RFValue(14)}px;
-  color: #4E3975;
+  color:  ${({ theme }) => theme.colors.title};
   margin-bottom: 8px;
 `;
 
 export const Error = styled.Text`
-  color: #D93025;
+  color: ${({ theme }) => theme.colors.error};
   margin-bottom: ${RFValue(4)}px;
 `;
 
 export const FormInput = styled(TextInput)`
   padding: ${RFValue(15)}px;
   border-radius: 10px;
-  border: 1px solid #9883BF;
-  color: #4E3975;
-  background-color: #FFFFFF;
+  border: 1px solid  ${({ theme }) => theme.colors.text};;
+  color: ${({ theme }) => theme.colors.primary};
+  background-color:  ${({ theme }) => theme.colors.secondary};;
   font-size: ${(RFValue(14))}px;
 `;

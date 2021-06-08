@@ -1,6 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { Alert } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
 
 import { SearchBar } from '../../components/SearchBar';
@@ -13,6 +12,8 @@ import {
   EmptyListMessage
 } from './styles';
 
+import { useStorageData } from '../../hooks/useStorageData';
+
 interface LoginDataProps {
   id: string;
   title: string;
@@ -23,43 +24,54 @@ interface LoginDataProps {
 type LoginListDataProps = LoginDataProps[];
 
 export function Home() {
-   const [searchListData, setSearchListData] = useState<LoginListDataProps>([]);
-   const [data, setData] = useState<LoginListDataProps>([]);
+  const [searchListData, setSearchListData] = useState<LoginListDataProps>([]);
+  const [data, setData] = useState<LoginListDataProps>([]);
+  const [loading, setLoading] = useState(true);
+
+  const {loadDataGetStorage, storageData} = useStorageData();
 
   async function loadData() {
     // Get asyncStorage data, use setSearchListData and setData
+   
+    try {
+      
+      await loadDataGetStorage();
+      
+      setSearchListData(storageData);
+      setData(storageData);
 
-    const dataKey = `@passmanager:logins`
-    const data = await AsyncStorage.getItem(dataKey);
+      setLoading(false);
+      
 
-    if(!data) return;
-
-    setSearchListData(JSON.parse(data));
-    setData(JSON.parse(data));
+    } catch (error) {
+        Alert.alert('Error no carregamento dos dados')
+    } 
     
   }
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [loading]);
 
   useFocusEffect(useCallback(() => {
+    setLoading(true);
     loadData();
   }, []));
 
   function handleFilterLoginData(search: string) {
     // Filter results inside data, save with setSearchListData
     
-    if(search != ''){
-        const loginSearch = data
-        .filter((busca: LoginDataProps) => 
-          busca.title.toLowerCase().includes(search.toLowerCase())
-        );
-
-        setSearchListData(loginSearch)
-    } else {
-        setSearchListData(data);
+    if (search.length === 0){
+      return setSearchListData(data)
     }
+
+    const loginSearch = data
+    .filter((busca: LoginDataProps) => 
+      busca.title.toLowerCase().includes(search.toLowerCase())
+    );
+
+    setSearchListData(loginSearch)
+
   }
 
   return (
